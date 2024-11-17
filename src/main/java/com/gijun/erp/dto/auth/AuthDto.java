@@ -1,5 +1,6 @@
 package com.gijun.erp.dto.auth;
 
+import com.gijun.erp.domain.user.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -49,4 +50,63 @@ public class AuthDto {
             @Schema(description = "직급 ID", example = "1")
             Long positionId
     ) {}
+        @Schema(description = "로그인 요청")
+        public record LoginRequest(
+                @Schema(description = "이메일", example = "user@example.com")
+                @NotBlank(message = "이메일은 필수 입력값입니다")
+                @Email(message = "올바른 이메일 형식이 아닙니다")
+                String email,
+
+                @Schema(description = "비밀번호", example = "Password123!")
+                @NotBlank(message = "비밀번호는 필수 입력값입니다")
+                String password
+        ) {}
+
+        @Schema(description = "로그인 응답")
+        public record LoginResponse(
+                @Schema(description = "액세스 토큰")
+                String accessToken,
+
+                @Schema(description = "리프레시 토큰")
+                String refreshToken,
+
+                @Schema(description = "사용자 정보")
+                UserInfo userInfo
+        ) {}
+
+        @Schema(description = "사용자 정보")
+        public record UserInfo(
+                @Schema(description = "사용자 ID")
+                Long id,
+
+                @Schema(description = "이메일")
+                String email,
+
+                @Schema(description = "이름")
+                String name,
+
+                @Schema(description = "권한")
+                String role,
+
+                @Schema(description = "상태")
+                String status,
+
+                @Schema(description = "부서 ID")
+                Long departmentId,
+
+                @Schema(description = "직급 ID")
+                Long positionId
+        ) {
+                public static UserInfo from(User user) {
+                        return new UserInfo(
+                                user.getId(),
+                                user.getEmail(),
+                                user.getName(),
+                                user.getRole(),
+                                user.getStatus(),
+                                user.getDepartmentId(),
+                                user.getPositionId()
+                        );
+                }
+        }
 }

@@ -9,21 +9,18 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 
+@Getter
 public class UserSecurityAdapter implements UserDetails {
-    @Getter
+
     private final User user;
-    private final Collection<? extends GrantedAuthority> authorities;
 
     public UserSecurityAdapter(User user) {
         this.user = user;
-        this.authorities = Collections.singletonList(
-                new SimpleGrantedAuthority(user.getRole())
-        );
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
+        return Collections.singleton(new SimpleGrantedAuthority(user.getRole()));
     }
 
     @Override
@@ -43,7 +40,7 @@ public class UserSecurityAdapter implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return !user.getStatus().equals("SUSPENDED");
+        return true;
     }
 
     @Override
@@ -53,6 +50,6 @@ public class UserSecurityAdapter implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return !user.isDeleted() && user.getStatus().equals("ACTIVE");
+        return !user.isDeleted() && "ACTIVE".equals(user.getStatus());
     }
 }

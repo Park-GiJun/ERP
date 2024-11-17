@@ -2,20 +2,30 @@ package com.gijun.erp.service.auth;
 
 import com.gijun.erp.common.exception.BaseException;
 import com.gijun.erp.common.exception.ErrorCode;
+import com.gijun.erp.config.jwt.JwtTokenProvider;
 import com.gijun.erp.domain.department.Department;
 import com.gijun.erp.domain.position.Position;
 import com.gijun.erp.domain.user.User;
 import com.gijun.erp.domain.user.UserRole;
 import com.gijun.erp.domain.user.UserStatus;
+import com.gijun.erp.dto.auth.AuthDto;
 import com.gijun.erp.dto.auth.AuthDto.SignUpRequest;
 import com.gijun.erp.repository.department.DepartmentRepository;
 import com.gijun.erp.repository.position.PositionRepository;
 import com.gijun.erp.repository.user.UserRepository;
+import com.gijun.erp.security.UserSecurityAdapter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Collections;
 
 @Slf4j
 @Service
@@ -26,6 +36,8 @@ public class AuthService {
     private final DepartmentRepository departmentRepository;
     private final PositionRepository positionRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final AuthenticationManager authenticationManager;
 
     @Transactional
     public void signUp(SignUpRequest request) {
@@ -111,5 +123,32 @@ public class AuthService {
                 .build();
 
         userRepository.save(user);
+    }
+
+    @Transactional
+    public AuthDto.LoginResponse login(AuthDto.LoginRequest request) {
+        // 1. 인증 처리
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.email(), request.password())
+        );
+
+        UserSecurityAdapter userAdapter = (UserSecurityAdapter) authentication.getPrincipal();
+        User user = userAdapter.getUser();
+
+        // 2. SecurityContext에 저장
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        // 3. 토큰 생성
+        String accessToken = jwtTokenProvider.createToken(authentication, false);
+        String refreshToken = jwtTokenProvider.createToken(authentication, true);
+
+        // 4. 마지막 로그인 시간 업데이트
+        user.updateLastLogin();
+
+        return new AuthDto.LoginResponse(
+                accessToken,
+                refreshToken,
+                AuthDto.UserInfo.from(user)
+        );
     }
 }

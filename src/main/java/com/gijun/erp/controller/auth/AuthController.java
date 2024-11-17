@@ -1,12 +1,13 @@
 package com.gijun.erp.controller.auth;
 
+import com.gijun.erp.common.response.ApiResponse;
+import com.gijun.erp.dto.auth.AuthDto;
 import com.gijun.erp.dto.auth.AuthDto.SignUpRequest;
 import com.gijun.erp.service.auth.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -28,32 +29,6 @@ public class AuthController {
             summary = "회원 가입",
             description = "새로운 사용자를 등록합니다. 기본 역할은 ROLE_USER이며, 초기 상태는 PENDING입니다."
     )
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "회원가입 성공",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = com.gijun.erp.common.response.ApiResponse.class)
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "잘못된 요청",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = com.gijun.erp.common.response.ApiResponse.class)
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "409",
-                    description = "이메일 중복",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = com.gijun.erp.common.response.ApiResponse.class)
-                    )
-            )
-    })
     @PostMapping("/signup")
     public com.gijun.erp.common.response.ApiResponse<Void> signUp(
             @Parameter(description = "회원가입 정보", required = true)
@@ -62,4 +37,11 @@ public class AuthController {
         authService.signUp(request);
         return com.gijun.erp.common.response.ApiResponse.successResponse();
     }
+
+    @Operation(summary = "로그인", description = "이메일과 비밀번호로 로그인합니다")
+    @PostMapping("/login")
+    public ApiResponse<AuthDto.LoginResponse> login(@Valid @RequestBody AuthDto.LoginRequest request) {
+        return ApiResponse.success(authService.login(request));
+    }
+
 }
