@@ -31,7 +31,10 @@ public enum ErrorCode {
     ALREADY_CHECKED_IN("AT001", "이미 출근 처리되었습니다"),
     NO_CHECK_IN_RECORD("AT002", "출근 기록이 없습니다"),
     INVALID_CHECKOUT("AT003", "잘못된 퇴근 처리입니다"),
-    ATTENDANCE_NOT_FOUND("AT004", "근태 기록을 찾을 수 없습니다");
+    ATTENDANCE_NOT_FOUND("AT004", "근태 기록을 찾을 수 없습니다"),
+
+    // User Errors
+    INVALID_PASSWORD("U001", "잘못된 비밀번호 입니다." );
 
     private final String code;
     private final String message;

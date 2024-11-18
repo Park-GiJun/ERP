@@ -20,11 +20,13 @@ spring:
       password: ${REDIS_PASSWORD}
       port: ${REDIS_PORT}
       host: ${REDIS_HOST}
+  config:
+    import: optional:file:.env[.properties]
 
 jwt:
   secret-key: ${JWT_SECRET}
-  access-token-validity-in-seconds: 3600  # 1시간
-  refresh-token-validity-in-seconds: 2592000  # 30일
+  expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+  refresh-token-validity-ms: ${JWT_REFRESH_EXPIRATION_MS:604800000}
 
 server:
   port: 9832

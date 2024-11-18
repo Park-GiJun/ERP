@@ -5,7 +5,8 @@ const axiosInstance = axios.create({
     timeout: 10000,
     headers: {
         'Content-Type': 'application/json',
-    }
+    },
+    withCredentials: true // 이 부분 추가
 });
 
 // Request Interceptor
@@ -13,7 +14,7 @@ axiosInstance.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('accessToken');
         if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
+            config.headers['Authorization'] = `Bearer ${token}`;
         }
         return config;
     },
@@ -24,24 +25,25 @@ axiosInstance.interceptors.request.use(
 
 // Response Interceptor
 axiosInstance.interceptors.response.use(
-    (response) => {
-        return response.data;
-    },
+    (response) => response.data,
     async (error) => {
         const originalRequest = error.config;
 
-        // 토큰 만료 시 처리
         if (error.response?.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;
 
             try {
                 const refreshToken = localStorage.getItem('refreshToken');
-                const response = await axios.post('/auth/refresh', { refreshToken });
-                const { accessToken } = response.data.data;
+                const response = await axiosInstance.post('/api/auth/refresh', {
+                    refreshToken: refreshToken
+                });
+
+                const { accessToken, refreshToken: newRefreshToken } = response.data;
 
                 localStorage.setItem('accessToken', accessToken);
-                originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+                localStorage.setItem('refreshToken', newRefreshToken);
 
+                originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
                 return axiosInstance(originalRequest);
             } catch (refreshError) {
                 localStorage.removeItem('accessToken');

@@ -6,7 +6,9 @@ import com.gijun.erp.dto.attendance.AttendanceVacationDto.VacationResponse;
 import com.gijun.erp.dto.attendance.AttendanceVacationDto.VacationApprovalRequest;
 import com.gijun.erp.service.attendance.VacationService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,20 +20,21 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/vacations")
 @RequiredArgsConstructor
 public class VacationController {
-
     private final VacationService vacationService;
 
     @Operation(summary = "휴가 신청")
     @PostMapping
+    @PreAuthorize("hasRole('USER')")
     public ApiResponse<VacationResponse> createVacation(
             @RequestParam Long userId,
-            @RequestBody VacationRequest request) {
+            @Valid @RequestBody VacationRequest request) {
         return ApiResponse.success(vacationService.createVacation(userId, request));
     }
 
     @Operation(summary = "휴가 상세 조회")
     @GetMapping("/{vacationId}")
-    public ApiResponse<VacationResponse> getVacation(@PathVariable Long vacationId) {
+    public ApiResponse<VacationResponse> getVacation(
+            @PathVariable Long vacationId) {
         return ApiResponse.success(vacationService.getVacation(vacationId));
     }
 
@@ -39,16 +42,16 @@ public class VacationController {
     @GetMapping
     public ApiResponse<Page<VacationResponse>> getVacationList(
             @RequestParam Long userId,
-            Pageable pageable) {
+            @Parameter(description = "페이징 정보") Pageable pageable) {
         return ApiResponse.success(vacationService.getVacationList(userId, pageable));
     }
 
     @Operation(summary = "휴가 승인/거절")
-    @PreAuthorize("hasRole('MANAGER')")
     @PatchMapping("/{vacationId}/approval")
+    @PreAuthorize("hasRole('ADMIN')")
     public ApiResponse<VacationResponse> updateVacationApproval(
             @PathVariable Long vacationId,
-            @RequestBody VacationApprovalRequest request) {
+            @Valid @RequestBody VacationApprovalRequest request) {
         return ApiResponse.success(vacationService.updateVacationApproval(vacationId, request));
     }
 

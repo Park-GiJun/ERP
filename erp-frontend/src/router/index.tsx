@@ -1,37 +1,50 @@
-import React from 'react';
-import { createBrowserRouter } from 'react-router-dom';
+// router.tsx
+import React, { Suspense } from 'react';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
 import Layout from '../components/layout/Layout';
+import ProtectedRoute from '../components/common/ProtectedRoute';
 
 // Pages
 const Dashboard = React.lazy(() => import('../pages/dashboard/Dashboard'));
-// const UserList = React.lazy(() => import('../pages/hr/UserList'));
-// const DepartmentList = React.lazy(() => import('../pages/hr/DepartmentList'));
-// const PositionList = React.lazy(() => import('../pages/hr/PositionList'));
-// const AttendanceStatus = React.lazy(() => import('../pages/attendance/AttendanceStatus'));
-// const VacationRequest = React.lazy(() => import('../pages/attendance/VacationRequest'));
-// const VacationApproval = React.lazy(() => import('../pages/attendance/VacationApproval'));
-// const Settings = React.lazy(() => import('../pages/settings/Settings'));
 const Login = React.lazy(() => import('../pages/auth/Login'));
 
 const router = createBrowserRouter([
     {
         path: '/',
-        element: <Layout />,
+        element: (
+            <ProtectedRoute>
+                <Suspense fallback={<div>Loading...</div>}>
+                    <Layout />
+                </Suspense>
+            </ProtectedRoute>
+        ),
         children: [
-            { path: 'dashboard', element: <Dashboard /> },
-            // { path: 'hr/users', element: <UserList /> },
-            // { path: 'hr/departments', element: <DepartmentList /> },
-            // { path: 'hr/positions', element: <PositionList /> },
-            // { path: 'attendance/status', element: <AttendanceStatus /> },
-            // { path: 'attendance/vacation', element: <VacationRequest /> },
-            // { path: 'attendance/approval', element: <VacationApproval /> },
-            // { path: 'settings', element: <Settings /> },
+            {
+                index: true,
+                element: <Navigate to="/dashboard" replace />
+            },
+            {
+                path: 'dashboard',
+                element: (
+                    <Suspense fallback={<div>Loading...</div>}>
+                        <Dashboard />
+                    </Suspense>
+                ),
+            }
         ],
     },
     {
         path: '/login',
-        element: <Login />
-    }
+        element: (
+            <Suspense fallback={<div>Loading...</div>}>
+                <Login />
+            </Suspense>
+        ),
+    },
+    {
+        path: '*',
+        element: <Navigate to="/login" replace />,
+    },
 ]);
 
 export default router;

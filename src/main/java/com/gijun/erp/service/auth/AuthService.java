@@ -151,4 +151,23 @@ public class AuthService {
                 AuthDto.UserInfo.from(user)
         );
     }
+    @Transactional
+    public AuthDto.TokenResponse refresh(AuthDto.TokenRequest request) {
+        // 리프레시 토큰 유효성 검증
+        if (!jwtTokenProvider.validateToken(request.refreshToken())) {
+            throw new BaseException(ErrorCode.INVALID_TOKEN, "유효하지 않은 리프레시 토큰입니다.");
+        }
+
+        // 리프레시 토큰으로부터 Authentication 추출
+        Authentication authentication = jwtTokenProvider.getAuthentication(request.refreshToken());
+
+        // 새로운 액세스 토큰 발급
+        String newAccessToken = jwtTokenProvider.createToken(authentication, false);
+        String newRefreshToken = jwtTokenProvider.createToken(authentication, true);
+
+        return new AuthDto.TokenResponse(
+                newAccessToken,
+                newRefreshToken
+        );
+    }
 }

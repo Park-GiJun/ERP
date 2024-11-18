@@ -21,47 +21,47 @@ export const attendanceService = {
         type: string;
         reason: string;
     }): Promise<ApiResponse<Vacation>> =>
-        axiosInstance.post('/vacations', data),
+        axiosInstance.post('/api/vacations', data),
 
     // 휴가 목록 조회
     getVacations: (params: {
         page?: number;
         size?: number;
     }): Promise<ApiResponse<VacationListResponse>> =>
-        axiosInstance.get('/vacations', { params }),
+        axiosInstance.get('/api/vacations', { params }),
 
     // 휴가 상세 조회
     getVacationDetail: (id: number): Promise<ApiResponse<Vacation>> =>
-        axiosInstance.get(`/vacations/${id}`),
+        axiosInstance.get(`/api/vacations/${id}`),
 
     // 휴가 승인/거절
     updateVacationStatus: (id: number, data: {
         approvalStatus: string;
         approverNote?: string;
     }): Promise<ApiResponse<Vacation>> =>
-        axiosInstance.patch(`/vacations/${id}/approval`, data),
+        axiosInstance.patch(`/api/vacations/${id}/approval`, data),
 
     // 휴가 취소
     deleteVacation: (id: number): Promise<ApiResponse<void>> =>
-        axiosInstance.delete(`/vacations/${id}`),
+        axiosInstance.delete(`/api/vacations/${id}`),
 };
 
 // User Service
 export const userService = {
     getProfile: (): Promise<ApiResponse<User>> =>
-        axiosInstance.get('/users/me'),
+        axiosInstance.get('/api/users/me'),
 
     updateProfile: (data: {
         name?: string;
         phoneNumber?: string;
     }): Promise<ApiResponse<User>> =>
-        axiosInstance.put('/users/me', data),
+        axiosInstance.put('/api/users/me', data),
 
     changePassword: (data: {
         currentPassword: string;
         newPassword: string;
     }): Promise<ApiResponse<void>> =>
-        axiosInstance.put('/users/me/password', data),
+        axiosInstance.put('/api/users/me/password', data),
 };
 
 // Auth Service
