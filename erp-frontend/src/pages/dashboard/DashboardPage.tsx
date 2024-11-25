@@ -42,7 +42,7 @@ const DashboardPage: React.FC = () => {
 
                 setSummary((prev) => ({
                     ...prev,
-                    annualLeave: annualLeaveRes.data?.data?.totalDays || 0,
+                    annualLeave: annualLeaveRes.data?.data?.totalDays - annualLeaveRes.data?.data?.usedDays || 0,
                 }));
 
                 const vacationRes = await axios.get<ApiResponse<any>>('/vacations', { params: { userId } });

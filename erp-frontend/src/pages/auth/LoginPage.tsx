@@ -76,7 +76,7 @@ const LoginPage: React.FC = () => {
                 </p>
                 <div className="mt-6">
                     <a
-                        href="https://olm.life/swagger-ui/index.html"
+                        href="http://15.165.163.233:9832/swagger-ui/index.html"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="block w-full text-center bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2 px-4 rounded-lg transition duration-200"

@@ -13,7 +13,7 @@ export default defineConfig({
         port: 8080,
         proxy: {
             '/api': {
-                target: 'http://localhost:9832',
+                target: 'https://olm.life',
                 changeOrigin: true,
                 secure: false,
             }
