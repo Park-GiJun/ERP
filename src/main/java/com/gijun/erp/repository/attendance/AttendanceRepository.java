@@ -27,4 +27,14 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
             LocalDateTime endDate,
             Pageable pageable
     );
+
+    @Query("SELECT a FROM Attendance a WHERE a.user.id = :userId AND a.workDate BETWEEN :startDate AND :endDate ORDER BY a.workDate DESC")
+    Page<Attendance> findByUserAndWorkDateBetweenOrderByWorkDateDesc(
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate,
+            @Param("userId") Long userId,
+            Pageable pageable
+    );
+
+
 }

@@ -51,4 +51,14 @@ public class AttendanceController {
             Pageable pageable) {
         return ApiResponse.success(attendanceService.searchAttendances(startDate, endDate, pageable));
     }
+
+    @Operation(summary = "개인 근태 목록 조회")
+    @GetMapping("/search/{userId}")
+    public ApiResponse<Page<AttendanceResponse>> searchAttendancesSolo(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
+            @PathVariable Long userId,
+            Pageable pageable) {
+        return ApiResponse.success(attendanceService.searchAttendancesSolo(startDate, endDate, userId ,pageable));
+    }
 }

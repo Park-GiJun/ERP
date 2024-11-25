@@ -91,4 +91,15 @@ public class AttendanceService {
                 .findAllByWorkDateBetweenOrderByWorkDateDesc(startDate, endDate, pageable)
                 .map(this::convertToResponse);
     }
+
+    public Page<AttendanceResponse> searchAttendancesSolo(
+            LocalDateTime startDate,
+            LocalDateTime endDate,
+            Long userId,
+            Pageable pageable
+    ) {
+        return attendanceRepository
+                .findByUserAndWorkDateBetweenOrderByWorkDateDesc(startDate, endDate,userId, pageable)
+                .map(this::convertToResponse);
+    }
 }
