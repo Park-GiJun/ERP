@@ -87,16 +87,18 @@ const DashboardPage: React.FC = () => {
 
     const handleCheckIn = async () => {
         try {
-            const res = await axios.post('/attendance/check-in', { note: '출근 처리' });
-            if (res.data?.success) {
-                setSummary(prev => ({
-                    ...prev,
-                    attendance: {
-                        ...prev.attendance,
-                        checkIn: dayjs().format('YYYY-MM-DD HH:mm')
-                    }
-                }));
-            }
+            const note = '출근 처리';
+            const res = await axios.post(
+                `/attendance/check-in`,
+                { note },
+                {
+                    params: { userId },
+                    headers: {
+                        'accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
             alert(res.data?.success ? '출근 처리 완료' : '출근 처리 실패');
         } catch (err) {
             alert('출근 처리 중 오류가 발생했습니다.');
@@ -105,7 +107,18 @@ const DashboardPage: React.FC = () => {
 
     const handleCheckOut = async () => {
         try {
-            const res = await axios.post('/attendance/check-out', { note: '퇴근 처리' });
+            const note = '퇴근 처리';
+            const res = await axios.post(
+                `/attendance/check-out`,
+                { note },
+                {
+                    params: { userId },
+                    headers: {
+                        'accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
             if (res.data?.success) {
                 setSummary(prev => ({
                     ...prev,

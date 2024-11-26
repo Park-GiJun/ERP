@@ -68,12 +68,13 @@ const VacationRequestPage = () => {
 
     const resetForm = () => {
         setRequest({
-            startDate: dayjs().format('YYYY-MM-DD'),
-            endDate: dayjs().format('YYYY-MM-DD'),
+            startDate: `${dayjs().format('YYYY-MM-DD')}T00:00:00`,
+            endDate: `${dayjs().format('YYYY-MM-DD')}T23:59:59`,
             type: VacationType.ANNUAL,
-            reason: ''
+            reason: '',
         });
     };
+
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -157,7 +158,7 @@ const VacationRequestPage = () => {
                                     <input
                                         type="date"
                                         value={request.endDate}
-                                        onChange={(e) => setRequest(prev => ({ ...prev, endDate: e.target.value }))}
+                                        onChange={(e) => setRequest(prev => ({ ...prev, endDate: e.target.value  }))}
                                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                                         required
                                     />
@@ -215,15 +216,15 @@ const VacationRequestPage = () => {
                         <div className="grid grid-cols-3 gap-4">
                             <div className="p-4 bg-gray-50 rounded-lg">
                                 <p className="text-sm text-gray-500">총 연차</p>
-                                <p className="text-xl font-bold text-gray-900">{balance?.data?.total || 0}일</p>
+                                <p className="text-xl font-bold text-gray-900">{balance?.data?.totalDays || 0}일</p>
                             </div>
                             <div className="p-4 bg-gray-50 rounded-lg">
                                 <p className="text-sm text-gray-500">사용</p>
-                                <p className="text-xl font-bold text-gray-900">{balance?.data?.used || 0}일</p>
+                                <p className="text-xl font-bold text-gray-900">{balance?.data?.usedDays || 0}일</p>
                             </div>
                             <div className="p-4 bg-gray-50 rounded-lg">
                                 <p className="text-sm text-gray-500">잔여</p>
-                                <p className="text-xl font-bold text-emerald-600">{balance?.data?.remaining || 0}일</p>
+                                <p className="text-xl font-bold text-emerald-600">{balance?.data?.remainingDays || 0}일</p>
                             </div>
                         </div>
                     </div>

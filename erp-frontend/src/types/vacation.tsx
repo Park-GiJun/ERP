@@ -37,9 +37,9 @@ export interface VacationResponse {
 }
 
 export interface VacationBalance {
-    total: number;
-    used: number;
-    remaining: number;
+    totalDays: number;
+    usedDays: number;
+    remainingDays: number;
     year: number;
 }
 
