@@ -84,6 +84,14 @@ const LoginPage: React.FC = () => {
                         Swagger UI로 이동
                     </a>
                 </div>
+
+                <div className="mt-6">
+                    <a
+                        className="block w-full text-center bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2 px-4 rounded-lg transition duration-200"
+                    >
+                        user@example.com // Password123!
+                    </a>
+                </div>
             </div>
         </div>
     );
