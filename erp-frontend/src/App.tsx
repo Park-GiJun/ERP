@@ -1,41 +1,63 @@
 import React from 'react';
-import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { RecoilRoot } from 'recoil';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import LoginPage from '@/pages/auth/LoginPage';
+import RegisterPage from '@/pages/auth/RegisterPage';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import MainLayout from '@/components/layout/MainLayout';
 import DashboardPage from '@/pages/dashboard/DashboardPage';
-import RegisterPage from "@/pages/auth/RegisterPage.tsx";
+import DepartmentPage from '@/pages/organization/DepartmentPage';
+import PositionPage from '@/pages/organization/PositionPage';
+import AttendancePage from '@/pages/attendance/AttendancePage';
+import VacationPage from '@/pages/attendance/VacationPage';
+import VacationApprovalPage from '@/pages/attendance/VacationApprovalPage';
+
+// Create a client
+const queryClient = new QueryClient();
 
 const App: React.FC = () => {
     return (
-        <RecoilRoot>
-            <BrowserRouter>
-                <Routes>
-                    {/* 로그인 페이지 */}
-                    <Route path="/login" element={<LoginPage />} />
+        <QueryClientProvider client={queryClient}>
+            <RecoilRoot>
+                <BrowserRouter>
+                    <Routes>
+                        {/* Public routes */}
+                        <Route path="/login" element={<LoginPage />} />
+                        <Route path="/register" element={<RegisterPage />} />
 
-                    <Route path="/register" element={<RegisterPage />} />
+                        {/* Protected routes */}
+                        <Route
+                            path="/"
+                            element={
+                                <ProtectedRoute>
+                                    <MainLayout />
+                                </ProtectedRoute>
+                            }
+                        >
+                            <Route index element={<Navigate to="/dashboard" replace />} />
+                            <Route path="dashboard" element={<DashboardPage />} />
 
-                    {/* 메인 레이아웃 */}
-                    <Route
-                        path="/"
-                        element={
-                            <ProtectedRoute>
-                                <MainLayout />
-                            </ProtectedRoute>
-                        }
-                    >
-                        {/* 대시보드 */}
-                        <Route index element={<Navigate to="/dashboard" replace />} />
-                        <Route path="dashboard" element={<DashboardPage />} />
-                    </Route>
+                            {/* Organization routes */}
+                            <Route path="organization">
+                                <Route path="departments" element={<DepartmentPage />} />
+                                <Route path="positions" element={<PositionPage />} />
+                            </Route>
 
-                    {/* 404 페이지로 리디렉션 */}
-                    <Route path="*" element={<Navigate to="/login" replace />} />
-                </Routes>
-            </BrowserRouter>
-        </RecoilRoot>
+                            {/* Attendance routes */}
+                            <Route path="attendance">
+                                <Route path="status" element={<AttendancePage />} />
+                                <Route path="vacation" element={<VacationPage />} />
+                                <Route path="approval" element={<VacationApprovalPage />} />
+                            </Route>
+                        </Route>
+
+                        {/* Fallback route */}
+                        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+                    </Routes>
+                </BrowserRouter>
+            </RecoilRoot>
+        </QueryClientProvider>
     );
 };
 
