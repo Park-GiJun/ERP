@@ -3,7 +3,8 @@ import type { AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import type { ApiResponse } from '@/types/api';
 
 const instance = axios.create({
-    baseURL: 'http://localhost:9832/api',
+    // baseURL: 'http://localhost:9832/api',
+    baseURL: 'https://olm.life/api',
     timeout: 10000,
     headers: {
         'Content-Type': 'application/json',

@@ -23,7 +23,7 @@ const AttendanceStatusPage = () => {
     const { data: response, isLoading } = useQuery<ApiResponse<AttendancePage>>({
         queryKey: ['attendance', searchParams],
         queryFn: async () => {
-            const response = await axios.get<ApiResponse<AttendancePage>>('/api/attendance/search', {
+            const response = await axios.get<ApiResponse<AttendancePage>>('/attendance/search', {
                 params: {
                     startDate: `${searchParams.startDate}T00:00:00`,
                     endDate: `${searchParams.endDate}T23:59:59`,

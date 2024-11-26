@@ -31,7 +31,7 @@ const VacationApprovalPage = () => {
     const { data: vacations, isLoading } = useQuery<ApiResponse<VacationPage>>({
         queryKey: ['vacation-approvals', searchParams],
         queryFn: async () => {
-            const response = await axios.get('/api/vacations', {
+            const response = await axios.get('/vacations', {
                 params: searchParams
             });
             return response.data;
@@ -44,7 +44,7 @@ const VacationApprovalPage = () => {
             status: ApprovalStatus;
             note: string;
         }) => {
-            return axios.patch(`/api/vacations/${params.vacationId}/approval`, {
+            return axios.patch(`/vacations/${params.vacationId}/approval`, {
                 approvalStatus: params.status,
                 approverNote: params.note
             });
